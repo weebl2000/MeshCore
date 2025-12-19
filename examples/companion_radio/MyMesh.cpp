@@ -85,10 +85,10 @@
 #define RESP_CODE_TUNING_PARAMS       23
 #define RESP_CODE_STATS               24   // v8+, second byte is stats type
 
-#define SEND_TIMEOUT_BASE_MILLIS        500
+#define SEND_TIMEOUT_BASE_MILLIS        1000   // Increased from 500 for 3-hop reliability
 #define FLOOD_SEND_TIMEOUT_FACTOR       16.0f
-#define DIRECT_SEND_PERHOP_FACTOR       6.0f
-#define DIRECT_SEND_PERHOP_EXTRA_MILLIS 250
+#define DIRECT_SEND_PERHOP_FACTOR       10.0f  // Increased from 6.0 for congested repeaters
+#define DIRECT_SEND_PERHOP_EXTRA_MILLIS 500    // Increased from 250 for queueing delays
 #define LAZY_CONTACTS_WRITE_DELAY       5000
 
 #define PUBLIC_GROUP_PSK                "izOH6cXN6mrJ5e26oRXNcg=="
