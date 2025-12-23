@@ -132,7 +132,7 @@ void loop() {
 
   if (the_mesh.getNodePrefs()->powersaving_enabled &&
       the_mesh.millisHasNowPassed(lastActive + nextSleepInSecs * 1000)) {
-    if (the_mesh.hasPendingWork() == 0) {
+    if (the_mesh.getPendingWorkCount() == 0) {
       board.sleep(POWERSAVE_SLEEP_DURATION_SECS);
       lastActive = millis();
       nextSleepInSecs = POWERSAVE_WORK_CHECK_SECS;
