@@ -55,7 +55,7 @@ public:
   // Wakes on: (1) LoRa packet received (DIO1 interrupt), or (2) timer after 'secs' seconds.
   // Only supported on ESP32-S3 with RTC-capable DIO1 pin.
   void sleep(uint32_t secs) override {
-#if defined(CONFIG_IDF_TARGET_ESP32S3)
+#if defined(CONFIG_IDF_TARGET_ESP32S3) && defined(P_LORA_DIO_1)
     // Only sleep if DIO1 is an RTC-capable GPIO
     if (!rtc_gpio_is_valid_gpio((gpio_num_t)P_LORA_DIO_1)) return;
 
