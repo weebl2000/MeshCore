@@ -56,7 +56,7 @@ class CustomSX1262 : public SX1262 {
       }
     
       setCRC(1);
-  
+
   #ifdef SX126X_CURRENT_LIMIT
       setCurrentLimit(SX126X_CURRENT_LIMIT);
   #endif
@@ -74,7 +74,20 @@ class CustomSX1262 : public SX1262 {
       #define SX126X_TXEN RADIOLIB_NC
     #endif
       setRfSwitchPins(SX126X_RXEN, SX126X_TXEN);
-  #endif 
+  #endif
+
+  #ifdef SX126X_SEMTECH_PATCH
+      // Apply Semtech-recommended register modification for improved performance
+      // This writes to register 0x08B5 as suggested by Semtech
+      uint8_t regValue = 0x01;  // Enable the register
+      int16_t regStatus = writeRegister(0x08B5, &regValue, 1);
+      if (regStatus == RADIOLIB_ERR_NONE) {
+        Serial.println("SX126x begin 0X8B5 enabled");
+      } else {
+        Serial.print("SX126x register 0X8B5 write failed: ");
+        Serial.println(regStatus);
+      }
+  #endif
 
       return true;  // success
     }
