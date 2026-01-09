@@ -87,9 +87,18 @@ public:
     // To check for WiFi status to see if there is active OTA
     wifi_mode_t mode;
     esp_err_t err = esp_wifi_get_mode(&mode);
-    
+
     if (err != ESP_OK) {          // WiFi is off ~ No active OTA, safe to go to sleep
-      enterLightSleep(secs);      // To wake up after "secs" seconds or when receiving a LoRa packet
+#ifdef PIN_USER_BTN
+      // Sleep with button wake support
+  #if defined(USER_BTN_PRESSED) && USER_BTN_PRESSED == LOW
+      enterLightSleep(secs, PIN_USER_BTN, false); // Button is active-low
+  #else
+      enterLightSleep(secs, PIN_USER_BTN, true);  // Button is active-high
+  #endif
+#else
+      enterLightSleep(secs);
+#endif
     }
   }
 

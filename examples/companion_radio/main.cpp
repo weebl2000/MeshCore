@@ -251,17 +251,7 @@ void loop() {
 
     // Only sleep if enough time has passed since last activity
     if (millis() >= lastActive + (nextSleepInSecs * 1000)) {
-#ifdef PIN_USER_BTN
-      // Sleep for 30 minutes, wake on LoRa packet, timer, or button press
-  #if defined(USER_BTN_PRESSED) && USER_BTN_PRESSED == LOW
-      board.enterLightSleep(1800, PIN_USER_BTN, false); // Button is active-low
-  #else
-      board.enterLightSleep(1800, PIN_USER_BTN, true);  // Button is active-high (default)
-  #endif
-#else
-      // Sleep for 30 minutes, wake on LoRa packet or timer
-      board.enterLightSleep(1800);
-#endif
+      board.sleep(1800); // Sleep for 30 minutes, wake on LoRa packet, timer, or button
       // Just woke up - reset timers
       lastActive = millis();
       nextSleepInSecs = WORK_TIME_SECS; // Stay awake for 5s after wake
