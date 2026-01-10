@@ -21,7 +21,7 @@ void SerialBLEInterface::begin(const char* device_name, uint32_t pin_code) {
   sec.setStaticPIN(pin_code);
   sec.setAuthenticationMode(ESP_LE_AUTH_REQ_SC_MITM_BOND);
 
-  //BLEDevice::setPower(ESP_PWR_LVL_N8);
+  BLEDevice::setPower(ESP_PWR_LVL_P9);
 
   // Create the BLE Server
   pServer = BLEDevice::createServer();
@@ -118,7 +118,7 @@ void SerialBLEInterface::onWrite(BLECharacteristic* pCharacteristic, esp_ble_gat
 
 // ---------- public methods
 
-void SerialBLEInterface::enable() { 
+void SerialBLEInterface::enable() {
   if (_isEnabled) return;
 
   _isEnabled = true;
