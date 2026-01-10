@@ -3,6 +3,13 @@
 #include <MeshCore.h>
 #include <Arduino.h>
 
+// Default button polarity: Active-LOW (pressed = LOW)
+// Most LoRa boards use GPIO as a boot button that pulls to GND when pressed.
+// Override with -D USER_BTN_PRESSED=HIGH in platformio.ini for rare active-high devices.
+#ifndef USER_BTN_PRESSED
+#define USER_BTN_PRESSED LOW
+#endif
+
 #if defined(ESP_PLATFORM)
 
 #include <rom/rtc.h>
@@ -90,8 +97,8 @@ public:
 
     if (err != ESP_OK) {          // WiFi is off ~ No active OTA, safe to go to sleep
 #ifdef PIN_USER_BTN
-      // Sleep with button wake support
-  #if defined(USER_BTN_PRESSED) && USER_BTN_PRESSED == LOW
+      // Sleep with button wake support (USER_BTN_PRESSED defaults to LOW if not defined)
+  #if USER_BTN_PRESSED == LOW
       enterLightSleep(secs, PIN_USER_BTN, false); // Button is active-low
   #else
       enterLightSleep(secs, PIN_USER_BTN, true);  // Button is active-high
