@@ -78,13 +78,20 @@ class CustomSX1262 : public SX1262 {
 
   #ifdef SX126X_SEMTECH_PATCH
       // Apply Semtech-recommended register modification for improved performance
-      // This writes to register 0x08B5 as suggested by Semtech
-      uint8_t regValue = 0x01;  // Enable the register
-      int16_t regStatus = writeRegister(0x08B5, &regValue, 1);
+      // Read-modify-write to register 0x08B5 to set bit 0 while preserving other bits
+      uint8_t regValue = 0;
+      int16_t regStatus = readRegister(0x08B5, &regValue, 1);
       if (regStatus == RADIOLIB_ERR_NONE) {
-        Serial.println("SX126x begin 0X8B5 enabled");
+        regValue |= 0x01;  // Set bit 0 while preserving other bits
+        regStatus = writeRegister(0x08B5, &regValue, 1);
+        if (regStatus == RADIOLIB_ERR_NONE) {
+          Serial.println("SX126x begin 0X8B5 enabled");
+        } else {
+          Serial.print("SX126x register 0X8B5 write failed: ");
+          Serial.println(regStatus);
+        }
       } else {
-        Serial.print("SX126x register 0X8B5 write failed: ");
+        Serial.print("SX126x register 0X8B5 read failed: ");
         Serial.println(regStatus);
       }
   #endif
