@@ -89,10 +89,10 @@
 #define RESP_CODE_STATS               24   // v8+, second byte is stats type
 #define RESP_CODE_AUTOADD_CONFIG      25
 
-#define SEND_TIMEOUT_BASE_MILLIS        500
+#define SEND_TIMEOUT_BASE_MILLIS        1000
 #define FLOOD_SEND_TIMEOUT_FACTOR       16.0f
-#define DIRECT_SEND_PERHOP_FACTOR       6.0f
-#define DIRECT_SEND_PERHOP_EXTRA_MILLIS 250
+#define DIRECT_SEND_PERHOP_FACTOR       10.0f
+#define DIRECT_SEND_PERHOP_EXTRA_MILLIS 500
 #define LAZY_CONTACTS_WRITE_DELAY       5000
 
 #define PUBLIC_GROUP_PSK                "izOH6cXN6mrJ5e26oRXNcg=="
