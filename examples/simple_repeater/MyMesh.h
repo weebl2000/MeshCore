@@ -99,6 +99,7 @@ class MyMesh : public mesh::Mesh, public CommonCLICallbacks {
   RateLimiter discover_limiter, anon_limiter;
   bool region_load_active;
   unsigned long dirty_contacts_expiry;
+  unsigned long next_nonce_persist;
 #if MAX_NEIGHBOURS
   NeighbourInfo neighbours[MAX_NEIGHBOURS];
 #endif
@@ -186,6 +187,9 @@ public:
 
   void savePrefs() override {
     _cli.savePrefs(_fs);
+  }
+  void onBeforeReboot() override {
+    if (acl.isNonceDirty()) acl.saveNonces();
   }
 
   void applyTempRadioParams(float freq, float bw, uint8_t sf, uint8_t cr, int timeout_mins) override;
