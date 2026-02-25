@@ -159,7 +159,7 @@ DispatcherAction Mesh::onRecvPacket(Packet* pkt) {
               if (pkt->getPayloadType() == PAYLOAD_TYPE_PATH) {
                 int k = 0;
                 uint8_t path_len = data[k++];
-                if (k + path_len + 1 > len) {  // bounds check: need path_len bytes + extra_type byte
+                if (path_len > MAX_PATH_SIZE || k + path_len + 1 > len) {  // bounds check: MAX_PATH_SIZE and need path_len bytes + extra_type byte
                   MESH_DEBUG_PRINTLN("%s Mesh::onRecvPacket(): bad PATH payload format, path_len=%d len=%d", getLogDateTime(), (int)path_len, (int)len);
                   break;
                 }
@@ -688,12 +688,20 @@ void Mesh::sendDirect(Packet* packet, const uint8_t* path, uint8_t path_len, uin
   uint8_t pri;
   if (packet->getPayloadType() == PAYLOAD_TYPE_TRACE) {   // TRACE packets are different
     // for TRACE packets, path is appended to end of PAYLOAD. (path is used for SNR's)
+    if (packet->payload_len + path_len > sizeof(packet->payload)) {
+      _mgr->free(packet);
+      return;
+    }
     memcpy(&packet->payload[packet->payload_len], path, path_len);
     packet->payload_len += path_len;
 
     packet->path_len = 0;
     pri = 5;   // maybe make this configurable
   } else {
+    if (path_len > MAX_PATH_SIZE) {
+      _mgr->free(packet);
+      return;
+    }
     memcpy(packet->path, path, packet->path_len = path_len);
     if (packet->getPayloadType() == PAYLOAD_TYPE_PATH) {
       pri = 1;   // slightly less priority
