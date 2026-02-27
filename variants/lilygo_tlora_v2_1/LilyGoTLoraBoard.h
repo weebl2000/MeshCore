@@ -6,6 +6,17 @@
 // LILYGO T-LoRa / T3 LoRa32 board with SX1276
 class LilyGoTLoraBoard : public ESP32Board {
 public:
+  void begin() {
+  #ifdef PIN_VEXT_EN
+    // Enable VEXT power rail before I2C/Wire init
+    // On TTGO LoRa V1.0 this powers the OLED display + LoRa antenna boost
+    pinMode(PIN_VEXT_EN, OUTPUT);
+    digitalWrite(PIN_VEXT_EN, PIN_VEXT_EN_ACTIVE);
+    delay(10);  // allow power rail to stabilize
+  #endif
+    ESP32Board::begin();
+  }
+
   const char* getManufacturerName() const override {
 #ifdef BOARD_MANUFACTURER_NAME
     return BOARD_MANUFACTURER_NAME;
